@@ -4,6 +4,116 @@
     <meta charset="UTF-8">
     <title>根据文件列表下载</title>
 </head>
+<script th:src="@{/static/js/jquery.min.js}"></script>
+<script type="text/javascript">
+
+	//查询文件列表
+	function queryFileList(){
+		$(".str").remove();//移除刷新
+		var path = $("#path").val(); 
+		$.ajax({
+ 			url:"/document/queryFileList",
+ 			type:"post",
+ 			async:false,
+ 			data:{"path":path},
+ 			/* dataType: "json", */
+ 			success:function(respResult){
+ 				createTable(respResult);
+ 			},
+ 			error:function(respResult){
+ 				alert('失败');
+ 			}
+			});
+	}
+	function  createTable(respResult){
+		 for(var i=0;i<respResult.length;i++){
+			 createTr(respResult[i].path,respResult[i].name,respResult[i].type);
+		} 
+	}
+
+	
+	function createTr(path,name,type){
+		//创建一行
+		if("file"==type){
+			var $tr = 
+				$("<tr class='str'>"+
+			    '<td>'+path+'</td>'+
+			    '<td>'+name+'</td>'+
+			    '<td>'+type+'</td>'+
+			    '<td align="center"><input type="button" value="下载"/></td>'+
+			  	'</tr>');
+				//追加到tbody下
+				$("#goods").append($tr);
+		}else{
+			var $tr = 
+				$("<tr class='str'>"+
+			    '<td>'+path+'</td>'+
+			    '<td>'+name+'</td>'+
+			    '<td>'+type+'</td>'+
+			    '<td align="center"><input type="button" value="进入目录"/></td>'+
+			  	'</tr>');
+				//追加到tbody下
+				$("#goods").append($tr);
+		}
+		
+	}
+
+
+	function init(){
+		var url="/document/downloadFile";
+		// 构造隐藏的form表单
+		var $form = $("<form id='download'  method='post'></form>");
+		$form.attr("action",url);
+		$("#form1").append($form);
+		// 添加提交参数
+		var $input1 = $("<input name='fileName' type='text'></input>");
+		$input1.attr("value","1");
+		$("#download").append($input1);
+		
+		var $input2 = $("<input name='param2' type='text'></input>");
+		$input2.attr("value","2");
+		$("#download").append($input2);
+		
+		var $input3 = $("<input name='param3' type='submit'></input>");
+		$input3.attr("value","下载");
+		$("#download").append($input3);
+		// 提交表单
+		/* $form.submit(); */
+	}
+
+</script>
+<body onload='init()'>
+		<h1>查询文件</h1>
+		<table>
+			<tr>
+				<td>文件路劲</td>
+				<td><input type="text" id="path" value="/"></td>
+				<td><input type="button"  value="上级目录"></td>
+				<td><input type="button" onclick="queryFileList();" value="查询"></td>
+			</tr>
+		</table>
+		
+		<h1>文件列表</h1>
+		<table>
+			<thead>
+				<tr>
+					<th>文件路劲</th>
+					<th>文件名称</th>
+					<th>文件类型</th>
+					<th>操作</th>
+				</tr>
+			</thead>
+			<tbody id="goods">
+			</tbody>
+		</table>
+		
+		<br><br>
+		
+		<!-- 文件下载隐藏框 -->
+		<form id="form1"></form>
+</body>
+
+
   <style type="text/css">
       h1 {
         text-align:center;
@@ -29,56 +139,4 @@
         border-collapse:collapse;
       }
     </style> 
-<script th:src="@{/static/js/jquery.min.js}"></script>
-<script type="text/javascript">
-	function init(){
-		var url="/document/download";
-		// 构造隐藏的form表单
-		var $form = $("<form id='download'  method='post'></form>");
-		$form.attr("action",url);
-		$("#form1").append($form);
-		// 添加提交参数
-		var $input1 = $("<input name='param1' type='text'></input>");
-		$input1.attr("value","1");
-		$("#download").append($input1);
-		
-		var $input2 = $("<input name='param2' type='text'></input>");
-		$input2.attr("value","2");
-		$("#download").append($input2);
-		
-		var $input3 = $("<input name='param2' type='submit'></input>");
-		$input3.attr("value","下载");
-		$("#download").append($input3);
-		// 提交表单
-		/* $form.submit(); */
-	}
-
-</script>
-<body onload='init()'>
-		<h1>查询文件</h1>
-		<table>
-			<tr>
-				<td>文件路劲</td>
-				<td>d:</td>
-				<td><input type="button" value="上级目录"></td>
-				<td><input type="button" value="查询"></td>
-			</tr>
-		</table>
-		
-		<h1>文件列表</h1>
-		<table>
-			<thead>
-				<tr>
-					<th>文件路劲</th>
-					<th>文件名称</th>
-					<th>文件大小</th>
-				</tr>
-			</thead>
-			<tbody id="goods">
-			</tbody>
-		</table>
-		
-		<br><br>
-		<form id="form1"></form>
-</body>
 </html>
