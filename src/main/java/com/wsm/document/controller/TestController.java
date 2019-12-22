@@ -1,17 +1,23 @@
 package com.wsm.document.controller;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 /**
  * @name: TestController
@@ -28,6 +34,70 @@ public class TestController {
     @ResponseBody
     @RequestMapping("/fileUploadLocal")
     public String fileUploadLocal(MultipartFile file){
+    	System.out.println("进入fileUploadLocal");
+        //判断文件是否为空
+        if(file.isEmpty()){
+            return "文件为空，上传失败!";
+        }
+        try{
+            //获得文件的字节流
+        	return fileSave(file);
+        }catch (Exception e){
+            e.printStackTrace();
+            return  "上传失败";
+        }
+    }
+    /**避免内存溢出
+     * 
+     * @param file
+     * @return
+     * @throws IOException
+     */
+    public String fileSave(MultipartFile file) throws IOException {
+    	InputStream fis = file.getInputStream();
+        FileOutputStream fos = new FileOutputStream("/temp/"+file.getOriginalFilename());
+        int len = 0;
+        byte[] b = new byte[1024*10];
+        while ((len=fis.read(b))!=-1){
+            fos.write(b,0,len);
+        }
+        fos.close();
+        fis.close();
+        return "文件保存成功";
+    }
+    
+    /**
+     * 文件上传
+     * @param file
+     * @param filePath
+     * @return
+     * @throws IllegalStateException
+     * @throws IOException
+     */
+    public  String fileSave(MultipartFile file,String filePath) throws IllegalStateException, IOException  { 
+    	System.out.println("开始上传文件");
+    	String dbFilePath="";//保存的文件路劲
+    	String content="";
+    	//文件具体路劲和文件名
+    	dbFilePath="/temp/"+file.getOriginalFilename();
+    	//保存文件
+    	File uploadFile = new File(dbFilePath);
+    	if(!uploadFile.getParentFile().exists()) {
+    		uploadFile.getParentFile().mkdir();
+    	}
+    	file.transferTo(uploadFile);
+    	System.out.println("上传文件成功");
+    	file=null;
+    	//存库的路劲
+    	content=dbFilePath;
+    	return content;
+    }
+    
+    
+    
+    @ResponseBody
+    @RequestMapping("/fileUploadLocal3")
+    public String fileUploadLocal3(MultipartFile file){
         //判断文件是否为空
         if(file.isEmpty()){
             return "文件为空，上传失败!";
@@ -36,7 +106,7 @@ public class TestController {
             //获得文件的字节流
             byte[] bytes=file.getBytes();
             //获得path对象，也即是文件保存的路径对象
-            String contextPath="F://images//";
+            String contextPath="/temp/";
             Path path= Paths.get(contextPath+file.getOriginalFilename());
             //调用静态方法完成将文件写入到目标路径
             Files.write(path,bytes);
@@ -47,12 +117,13 @@ public class TestController {
         }
     }
 
+    
     @RequestMapping("/download")
     public String downloadFile(HttpServletResponse response) {
-        String fileName = "aim_test.txt";// 设置文件名，根据业务需要替换成要下载的文件名
+        String fileName = "IMG_20191215_150144.jpg";// 设置文件名，根据业务需要替换成要下载的文件名
         if (fileName != null) {
             //设置文件路径
-            String realPath = "F://images//";
+            String realPath = "/temp/";
             File file = new File(realPath , fileName);
             if (file.exists()) {
                 response.setContentType("application/force-download");// 设置强制下载不打开

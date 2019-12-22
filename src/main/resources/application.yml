@@ -32,8 +32,8 @@ spring:
     #useGlobalDataSourceStat: true
   servlet:
     multipart:
-      max-file-size: 1MB
-      max-request-size: 2MB
+      max-file-size: 1500MB
+      max-request-size: 1500MB
   thymeleaf:
     mode: LEGACYHTML5
     encoding: utf-8
