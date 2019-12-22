@@ -1,7 +1,7 @@
-server:
-  servlet:
-    context-path: /document
-  port: 8081
+#server:
+#  servlet:
+#    context-path: /document
+#  port: 8081
 spring:
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource
@@ -34,9 +34,9 @@ spring:
     multipart:
       max-file-size: 1500MB
       max-request-size: 1500MB
-  thymeleaf:
-    mode: LEGACYHTML5
-    encoding: utf-8
-    cache: false
-    prefix: classpath:/templates/
+#  thymeleaf:
+#    mode: LEGACYHTML5
+#    encoding: utf-8
+#    cache: false
+#    prefix: classpath:/templates/
 

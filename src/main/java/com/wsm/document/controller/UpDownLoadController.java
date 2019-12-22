@@ -26,11 +26,12 @@ import org.springframework.web.multipart.MultipartFile;
  * @Description:
  */
 @Controller
-public class TestController {
+public class UpDownLoadController {
     @GetMapping("/")
     public String test(){
-        return "upload";
+        return "upDownload";
     }
+    
     @ResponseBody
     @RequestMapping("/fileUploadLocal")
     public String fileUploadLocal(MultipartFile file){
@@ -117,7 +118,7 @@ public class TestController {
         }
     }
 
-    
+    /////////////////////下载文件//////////////////////////////
     @RequestMapping("/download")
     public String downloadFile(HttpServletResponse response) {
         String fileName = "IMG_20191215_150144.jpg";// 设置文件名，根据业务需要替换成要下载的文件名

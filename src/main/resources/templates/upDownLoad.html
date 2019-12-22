@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>上传</title>
+</head>
+<body>
+<h1>上传文件</h1>
+<form method="POST" action="/document/fileUploadLocal" enctype="multipart/form-data">
+    <input type="file" id="file_input"name="file" />
+    <input type="submit"  value="上传" />
+</form>
+
+<h1>下载文件</h1>
+<form id='download'  method='post' action="/document/download">
+		<input type="text" id="fileName" value="" placeholder="请输入下载文件名"/> 
+		<input type="submit" value="下载" />
+</form>
+</body>
+</html>
