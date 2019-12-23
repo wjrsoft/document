@@ -121,7 +121,7 @@ public class UpDownLoadController {
     /////////////////////下载文件//////////////////////////////
     @RequestMapping("/download")
     public String downloadFile(HttpServletResponse response) {
-        String fileName = "IMG_20191215_150144.jpg";// 设置文件名，根据业务需要替换成要下载的文件名
+        String fileName = "王锦荣毕业学位教师证.zip";// 设置文件名，根据业务需要替换成要下载的文件名
         if (fileName != null) {
             //设置文件路径
             String realPath = "/temp/";

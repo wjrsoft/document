@@ -34,9 +34,7 @@ public class DownLoadController {
     }
     
     
-    public static void main(String[] args) {
-//		System.out.println(JSON.toJSONString(getFiles("/code")));
-	}
+
     /**
      * @Author：
      * @Description：获取某个目录下所有直接下级文件，不包括目录下的子目录的下的文件，所以不用递归获取
@@ -113,16 +111,18 @@ public class DownLoadController {
     /////////////////////下载文件//////////////////////////////
     @RequestMapping("/downloadFile")
     public String downloadFile(HttpServletResponse response,HttpServletRequest req) {
-    	String params=req.getParameter("fileName");
-    	System.out.println(params);
-        String fileName = "IMG_20191215_150144.jpg";// 设置文件名，根据业务需要替换成要下载的文件名
-        if (fileName != null) {
+    	String path=req.getParameter("path").trim();
+        String name=req.getParameter("name").trim();
+        String realPath=path.replaceAll(name,"").trim();
+        System.out.println("路劲："+realPath);
+        System.out.println("名字："+name);
+        if (name != null) {
             //设置文件路径
-            String realPath = "/temp/";
-            File file = new File(realPath , fileName);
+            File file = new File(realPath , name);
+//            File file = new File(path);
             if (file.exists()) {
                 response.setContentType("application/force-download");// 设置强制下载不打开
-                response.addHeader("Content-Disposition", "attachment;fileName=" + fileName);// 设置文件名
+                response.addHeader("Content-Disposition", "attachment;fileName=" + name);// 设置文件名
                 byte[] buffer = new byte[1024];
                 FileInputStream fis = null;
                 BufferedInputStream bis = null;
@@ -158,4 +158,13 @@ public class DownLoadController {
         }
         return null;
     }
+
+
+//    public static void main(String[] args) {
+//        String str="/temp/IMG_20191215_150144.jpg";
+//        String str2="IMG_20191215_150144.jpg";
+//        String str3=str.replaceAll("IMG_20191215_150144.jpg","");
+//        System.out.println(str3);
+//        System.out.println();
+//    }
 }

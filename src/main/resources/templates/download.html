@@ -25,13 +25,15 @@
  			}
 			});
 	}
+
+	//创建一个table
 	function  createTable(respResult){
 		 for(var i=0;i<respResult.length;i++){
 			 createTr(respResult[i].path,respResult[i].name,respResult[i].type);
 		} 
 	}
 
-	
+	//创建一行表格
 	function createTr(path,name,type){
 		//创建一行
 		if("file"==type){
@@ -40,7 +42,7 @@
 			    '<td>'+path+'</td>'+
 			    '<td>'+name+'</td>'+
 			    '<td>'+type+'</td>'+
-			    '<td align="center"><input type="button" value="下载"/></td>'+
+			    '<td align="center"><input type="button"  onclick="download(this);" value="下载"/></td>'+
 			  	'</tr>');
 				//追加到tbody下
 				$("#goods").append($tr);
@@ -50,33 +52,76 @@
 			    '<td>'+path+'</td>'+
 			    '<td>'+name+'</td>'+
 			    '<td>'+type+'</td>'+
-			    '<td align="center"><input type="button" value="进入目录"/></td>'+
+			    '<td align="center"><input type="button" onclick="intoDirCory(this);" value="进入目录"/></td>'+
 			  	'</tr>');
 				//追加到tbody下
 				$("#goods").append($tr);
 		}
 		
 	}
+	//下载文件
+	function download(btn){
+		$(".formcss").remove();//刷新下载框
+		//获取按钮的父亲的兄弟们(tds)
+		var $tds = $(btn).parent().siblings();
+		var path = $tds.eq(0).html();
+		var name = $tds.eq(1).html();
+		createDownForm(path,name);
+	}
 
-
-	function init(){
+	//构建隐藏的下载框
+	function createDownForm(path,name){
 		var url="/document/downloadFile";
 		// 构造隐藏的form表单
-		var $form = $("<form id='download'  method='post'></form>");
+		var $form = $("<form id='download' style='display:none' class='formcss' method='post'></form>");
 		$form.attr("action",url);
 		$("#form1").append($form);
 		// 添加提交参数
-		var $input1 = $("<input name='fileName' type='text'></input>");
-		$input1.attr("value","1");
+		var $input1 = $("<input name='path' type='text'></input>");
+		$input1.attr("value",path);
 		$("#download").append($input1);
-		
-		var $input2 = $("<input name='param2' type='text'></input>");
-		$input2.attr("value","2");
+
+		var $input2 = $("<input name='name' type='text'></input>");
+		$input2.attr("value",name);
 		$("#download").append($input2);
-		
+
 		var $input3 = $("<input name='param3' type='submit'></input>");
 		$input3.attr("value","下载");
 		$("#download").append($input3);
+		// 提交表单
+		$form.submit();
+	}
+	//进入目录
+	function intoDirCory(btn){
+		var $tds = $(btn).parent().siblings();
+		var path = $tds.eq(0).html();
+		$("#path").val(path);
+		queryFileList();
+	}
+	//返回上一层目录
+	function returnLastDir(){
+		var path=$("#path").val();
+		alert(path);
+	}
+
+	function init(){
+		// var url="/document/downloadFile";
+		// // 构造隐藏的form表单
+		// var $form = $("<form id='download'  method='post'></form>");
+		// $form.attr("action",url);
+		// $("#form1").append($form);
+		// // 添加提交参数
+		// var $input1 = $("<input name='fileName' type='text'></input>");
+		// $input1.attr("value","1");
+		// $("#download").append($input1);
+		//
+		// var $input2 = $("<input name='param2' type='text'></input>");
+		// $input2.attr("value","2");
+		// $("#download").append($input2);
+		//
+		// var $input3 = $("<input name='param3' type='submit'></input>");
+		// $input3.attr("value","下载");
+		// $("#download").append($input3);
 		// 提交表单
 		/* $form.submit(); */
 	}
@@ -87,8 +132,8 @@
 		<table>
 			<tr>
 				<td>文件路劲</td>
-				<td><input type="text" id="path" value="/"></td>
-				<td><input type="button"  value="上级目录"></td>
+				<td><input style="width:200px;" type="text" id="path" value="/"></td>
+				<td><input type="button"  onclick="returnLastDir();" value="上级目录"></td>
 				<td><input type="button" onclick="queryFileList();" value="查询"></td>
 			</tr>
 		</table>
@@ -108,7 +153,11 @@
 		</table>
 		
 		<br><br>
-		
+		<h1>上传文件</h1>
+		<form method="POST" action="/document/fileUploadLocal" enctype="multipart/form-data">
+			<input type="file" id="file_input"name="file" />
+			<input type="submit"  value="上传" />
+		</form>
 		<!-- 文件下载隐藏框 -->
 		<form id="form1"></form>
 </body>
