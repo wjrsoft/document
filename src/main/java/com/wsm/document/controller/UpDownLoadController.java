@@ -27,7 +27,7 @@ import org.springframework.web.multipart.MultipartFile;
  */
 @Controller
 public class UpDownLoadController {
-    @GetMapping("/")
+    @GetMapping("/upDownload")
     public String test(){
         return "upDownload";
     }

@@ -21,6 +21,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 public class DownLoadController {
+    @GetMapping("/")
+    public String test(){
+        return "download";
+    }
     @GetMapping("/downloadhtml")
     public String download() {
     	return "download";
@@ -85,7 +89,7 @@ public class DownLoadController {
                         String strFileName = files[i].getAbsolutePath();
                         if (null != strFileName && !strFileName.endsWith(".jar") && !strFileName.endsWith(".cmd")
                                 && !strFileName.endsWith(".xlsx")) {
-                            System.out.println("---" + strFileName);
+                            System.out.println("--- " + strFileName);
                             fileList.add(files[i]);
                         }
                     }
@@ -158,13 +162,4 @@ public class DownLoadController {
         }
         return null;
     }
-
-
-//    public static void main(String[] args) {
-//        String str="/temp/IMG_20191215_150144.jpg";
-//        String str2="IMG_20191215_150144.jpg";
-//        String str3=str.replaceAll("IMG_20191215_150144.jpg","");
-//        System.out.println(str3);
-//        System.out.println();
-//    }
 }
