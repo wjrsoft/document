@@ -7,6 +7,22 @@
 <script th:src="@{/static/js/jquery.min.js}"></script>
 <script type="text/javascript">
 
+	//返回上一层目录
+	function returnLastDir(){
+		$(".str").remove();//移除刷新
+		var path=$("#path").val();
+		var index = path .lastIndexOf("\/");
+		var lastPath =path .substring(0, 1);
+		if(index>0){
+			lastPath  = path .substring(0, index);
+		}
+		$("#path").val(lastPath);
+		queryFileList();
+	}
+	function clearFileList() {
+		$(".str").remove();//移除刷新
+	}
+
 	//查询文件列表
 	function queryFileList(){
 		$(".str").remove();//移除刷新
@@ -42,7 +58,7 @@
 			    '<td>'+path+'</td>'+
 			    '<td>'+name+'</td>'+
 			    '<td>'+type+'</td>'+
-			    '<td align="center"><input type="button"  onclick="download(this);" value="下载"/></td>'+
+			    '<td align="center"><input type="button" style="background:#FAEBD7" onclick="download(this);" value="下载"/></td>'+
 			  	'</tr>');
 				//追加到tbody下
 				$("#goods").append($tr);
@@ -98,11 +114,7 @@
 		$("#path").val(path);
 		queryFileList();
 	}
-	//返回上一层目录
-	function returnLastDir(){
-		var path=$("#path").val();
-		alert(path);
-	}
+
 
 	function init(){
 		// var url="/document/downloadFile";
@@ -134,6 +146,7 @@
 				<td>文件路劲</td>
 				<td><input style="width:200px;" type="text" id="path" value="/"></td>
 				<td><input type="button"  onclick="returnLastDir();" value="上级目录"></td>
+				<td><input type="button" onclick="clearFileList();" value="清空列表"></td>
 				<td><input type="button" onclick="queryFileList();" value="查询"></td>
 			</tr>
 		</table>
@@ -154,8 +167,10 @@
 		
 		<br><br>
 		<h1>上传文件</h1>
+
 		<form method="POST" action="/document/fileUploadLocal" enctype="multipart/form-data">
 			<input type="file" id="file_input"name="file" />
+			路劲:<input type="text" id="upPath"name="path" value="/temp"/>
 			<input type="submit"  value="上传" />
 		</form>
 		<!-- 文件下载隐藏框 -->

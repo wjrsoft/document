@@ -14,6 +14,7 @@ import java.nio.file.Paths;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -34,7 +35,11 @@ public class UpDownLoadController {
     
     @ResponseBody
     @RequestMapping("/fileUploadLocal")
-    public String fileUploadLocal(MultipartFile file){
+    public String fileUploadLocal(MultipartFile file,String path){
+        if(StringUtils.isEmpty(path)){
+            return  "请指定路劲";
+        }
+        System.out.println("上传文件路劲"+path);
     	System.out.println("进入fileUploadLocal");
         //判断文件是否为空
         if(file.isEmpty()){
@@ -42,7 +47,7 @@ public class UpDownLoadController {
         }
         try{
             //获得文件的字节流
-        	return fileSave(file);
+        	return fileSaveSafe(file,path);
         }catch (Exception e){
             e.printStackTrace();
             return  "上传失败";
@@ -54,7 +59,7 @@ public class UpDownLoadController {
      * @return
      * @throws IOException
      */
-    public String fileSave(MultipartFile file) throws IOException {
+    public String fileSaveSafe(MultipartFile file,String path) throws IOException {
     	InputStream fis = file.getInputStream();
         FileOutputStream fos = new FileOutputStream("/temp/"+file.getOriginalFilename());
         int len = 0;
